@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>p5.js Iframes</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css" rel="stylesheet" />
+    <style>
+        body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 10px;
+            height: 100vh;
+            margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 1px solid black;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            cursor: pointer;
+            z-index: 1;
+        }
+        #floatingPane {
+            position: fixed;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            background-color: #f5f2f0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: none;
+            overflow: auto;
+            padding: 20px;
+            z-index: 1000;
+        }
+        #closeButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        #copyButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="iframe-container">
+        <iframe src="sketch1.html"></iframe>
+        <div class="overlay" data-file="sketch1.js" onclick="showPane('sketch1.js')"></div>
+    </div>
+    <div class="iframe-container">
+        <iframe src="sketch2.html"></iframe>
+        <div class="overlay" data-file="sketch2.js" onclick="showPane('sketch2.js')"></div>
+    </div>
+    <div class="iframe-container">
+        <iframe src="sketch3.html"></iframe>
+        <div class="overlay" data-file="sketch3.js" onclick="showPane('sketch3.js')"></div>
+    </div>
+    <div class="iframe-container">
+        <iframe src="sketch4.html"></iframe>
+        <div class="overlay" data-file="sketch4.js" onclick="showPane('sketch4.js')"></div>
+    </div>
+
+    <div id="floatingPane" onclick="closePane(event)">
+        <!-- <span id="closeButton" onclick="closePane()">✖</span> -->
+        <button id="copyButton" onclick="copyToClipboard(event)">Copy to Clipboard</button>
+        <pre><code id="htmlContent" class="language-js"></code></pre>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script>
+        function showPane(filename) {
+            console.log('Fetching:', filename);
+            fetch(filename)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    document.getElementById('htmlContent').textContent = data;
+                    Prism.highlightAll();
+                    document.getElementById('floatingPane').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error fetching the JS file:', error);
+                    document.getElementById('htmlContent').textContent = 'Error loading content: ' + error;
+                    document.getElementById('floatingPane').style.display = 'block';
+                });
+        }
+
+       function closePane(event) {
+            if (event.target.id !== 'copyButton') {
+                document.getElementById('floatingPane').style.display = 'none';
+            }
+        }
+
+        function copyToClipboard(event) {
+            event.stopPropagation(); // Prevent closing the pane when the button is clicked
+            const content = document.getElementById('htmlContent').textContent;
+            navigator.clipboard.writeText(content)
+                .then(() => {
+                    alert('Content copied to clipboard');
+                })
+                .catch(err => {
+                    console.error('Error copying to clipboard:', err);
+                });
+        }    </script>
+</body>
+</html>
