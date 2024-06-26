@@ -39,7 +39,7 @@ def generate(prompt):
         messages=[
             {
                 "role": "system",
-                "content": "You are a helpful assistant, tasked with generating p5.js sketches. Please responde in valid JSON format. Use the 'explanation' field to comment and explain your reasoning in generating the output. Use the 'code' field to list the code to run, this field can contain only valid javascript code and p5 function calls. The 'code' field should always contain at least the definition of setup() and draw() so that it can succesfully run in the p5.js framework. Please make sure the p5 code in the 'code' field uses the windowWidth and windowHeight when creating the canvas.",
+                "content": "You are a helpful assistant, tasked with generating p5.js sketches. Please responde in valid JSON format. Use the 'explanation' field to comment and explain your reasoning in generating the output. The 'explanation' field should always come first. Use the 'code' field to list the code to run, this field can contain only valid javascript code and p5 function calls. The 'code' field should always contain at least the definition of setup() and draw() so that it can succesfully run in the p5.js framework. Please make sure the p5 code in the 'code' field uses the windowWidth and windowHeight when creating the canvas.",
             },
             {"role": "user", "content": prompt},
         ],
@@ -54,6 +54,10 @@ def generate(prompt):
         file = f"generated/sketch{i+1}.js"
         with open(file, "w") as f:
             code = jmsg["code"]
+            expl = jmsg["explanation"]
+            f.write("/*\n")
+            f.write(expl.replace(". ", ".\n"))
+            f.write("*/\n")
             f.write(code)
 
 
