@@ -49,13 +49,6 @@
             padding: 20px;
             z-index: 1000;
         }
-        #closeButton {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            font-size: 20px;
-        }
         #copyButton {
             position: absolute;
             top: 10px;
@@ -67,7 +60,11 @@
             color: white;
             border: none;
             border-radius: 5px;
-        }        pre {
+        }        
+        #copyButton.clicked {
+            background-color: grey;
+        }
+        pre {
             white-space: pre-wrap;
             word-wrap: break-word;
         }
@@ -93,7 +90,7 @@
 
     <div id="floatingPane" onclick="closePane(event)">
         <!-- <span id="closeButton" onclick="closePane()">✖</span> -->
-        <button id="copyButton" onclick="copyToClipboard(event)">Copy to Clipboard</button>
+        <button id="copyButton" onclick="copyToClipboard(event)"></button>
         <pre><code id="htmlContent" class="language-js"></code></pre>
     </div>
 
@@ -109,6 +106,9 @@
                     return response.text();
                 })
                 .then(data => {
+                    let btn = document.getElementById('copyButton')
+                    btn.innerText = "Copy to clipboard.";
+                    btn.classList.remove("clicked");
                     document.getElementById('htmlContent').textContent = data;
                     Prism.highlightAll();
                     document.getElementById('floatingPane').style.display = 'block';
@@ -131,7 +131,9 @@
             const content = document.getElementById('htmlContent').textContent;
             navigator.clipboard.writeText(content)
                 .then(() => {
-                    alert('Content copied to clipboard');
+                    let btn = document.getElementById('copyButton')
+                    btn.innerText = "Copied.";
+                    btn.classList.add('clicked');
                 })
                 .catch(err => {
                     console.error('Error copying to clipboard:', err);
