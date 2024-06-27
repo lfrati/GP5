@@ -13,3 +13,5 @@ First run `server.py`, it will start serving the contents of the `generated` fol
 While `server.py` is running, launch `generate.py` in another window. 
 
 It will ask you for a prompt and generate new sketches. Once the sketches are ready the page should automatically reload.
+
+_Note: The browser sometimes caches pages and doesn't reload properly. You may need to force a hard-refresh of the page._
