@@ -1,0 +1,1 @@
+A cute koala climbing on a tree. Please animate it moving up and down.
